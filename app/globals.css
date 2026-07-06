@@ -60,7 +60,7 @@ button { cursor: pointer; }
 .benefits p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
 
 .section { padding: 110px 6vw; }
-.section-heading { margin-bottom: 42px; display: flex; align-items: end; justify-content: space-between; }
+.section-heading { margin-bottom: 42px; display: flex; align-items: flex-end; justify-content: space-between; }
 .section-heading h2 { font-size: clamp(35px,4vw,52px); }
 .section-heading > a { font-size: 13px; border-bottom: 1px solid var(--ink); padding-bottom: 5px; }
 .product-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; }
@@ -143,7 +143,7 @@ footer small { display: block; padding-top: 25px; border-top: 1px solid var(--li
   .hero h1 { font-size: 44px; }
   .hero-art { min-height: 410px; }
   .hero-card { width: 210px; height: 280px; padding: 25px; }.card-back { left: 4%; top: 80px; }.card-front { left: 30%; top: 115px; }.hero-card strong { font-size: 39px; }
-  .section-heading { align-items: start; }.section-heading > a { display: none; }
+  .section-heading { align-items: flex-start; }.section-heading > a { display: none; }
   .product-grid { grid-template-columns: 1fr; }
   .product-image { height: 280px; }
   .story-art > div { width: 260px; height: 330px; }
