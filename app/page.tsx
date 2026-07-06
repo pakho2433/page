@@ -12,6 +12,13 @@ type Product = {
   accent: string;
 };
 
+type PaymentMethod = {
+  id: string;
+  name: string;
+  note: string;
+  icon: string;
+};
+
 const products: Product[] = [
   { id: 1, name: "晨霧陶瓷杯", category: "餐桌生活", price: 128, emoji: "☕", description: "霧面釉色與舒適杯形，讓每天的第一杯更有儀式感。", accent: "sand" },
   { id: 2, name: "雲朵香薰燈", category: "居家香氣", price: 268, emoji: "☁️", description: "柔和燈光配合香薰，為房間營造安靜舒適的氣氛。", accent: "lavender" },
@@ -21,11 +28,20 @@ const products: Product[] = [
   { id: 6, name: "輕旅隨行瓶", category: "隨身配件", price: 148, emoji: "🥤", description: "輕巧、防漏、容易清洗，是日常補水的理想拍檔。", accent: "sky" },
 ];
 
+const paymentMethods: PaymentMethod[] = [
+  { id: "card", name: "Visa / Mastercard", note: "信用卡付款", icon: "💳" },
+  { id: "alipay", name: "AlipayHK", note: "支付寶香港", icon: "🔵" },
+  { id: "payme", name: "PayMe", note: "PayMe 轉帳", icon: "💜" },
+  { id: "fps", name: "轉數快 FPS", note: "銀行即時轉帳", icon: "⚡" },
+];
+
 export default function Home() {
   const [cart, setCart] = useState<Record<number, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0].id);
 
+  const selectedPayment = paymentMethods.find((method) => method.id === paymentMethod) || paymentMethods[0];
   const itemCount = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
   const total = useMemo(
     () => products.reduce((sum, product) => sum + product.price * (cart[product.id] || 0), 0),
@@ -51,12 +67,12 @@ export default function Home() {
     `你好，我想訂購以下商品：\n${products
       .filter((product) => cart[product.id])
       .map((product) => `• ${product.name} x ${cart[product.id]} — HK$${product.price * cart[product.id]}`)
-      .join("\n")}\n\n總額：HK$${total}`
+      .join("\n")}\n\n付款方式：${selectedPayment.name}\n總額：HK$${total}\n\n請提供付款連結或收款資料，謝謝。`
   );
 
   return (
     <main>
-      <div className="announcement">全店購物滿 HK$500 免本地運費 · 新會員首單 9 折</div>
+      <div className="announcement">全店購物滿 HK$500 免本地運費 · 支援 Visa / Mastercard / AlipayHK / PayMe / 轉數快</div>
       <header className="site-header">
         <a className="logo" href="#top" aria-label="Mori Select 首頁">
           MORI<span>SELECT</span>
@@ -83,6 +99,11 @@ export default function Home() {
             <a className="primary-button" href="#products">立即選購</a>
             <a className="text-link" href="#about">認識我們 <span>→</span></a>
           </div>
+          <div className="payment-strip" aria-label="支援付款方式">
+            {paymentMethods.map((method) => (
+              <span key={method.id}>{method.icon} {method.name}</span>
+            ))}
+          </div>
         </div>
         <div className="hero-art" aria-hidden="true">
           <div className="sun"></div>
@@ -96,7 +117,7 @@ export default function Home() {
       <section className="benefits">
         <div><span>✦</span><strong>用心選物</strong><p>每件商品都經過細心挑選</p></div>
         <div><span>⌂</span><strong>香港本地寄送</strong><p>一般訂單 2–4 個工作天送達</p></div>
-        <div><span>♡</span><strong>貼心售後</strong><p>購物問題由我們親自跟進</p></div>
+        <div><span>♡</span><strong>多種付款</strong><p>支援信用卡、AlipayHK、PayMe、轉數快</p></div>
       </section>
 
       <section className="section" id="products">
@@ -167,8 +188,25 @@ export default function Home() {
           ))}
         </div>
         <div className="cart-summary">
+          <section className="payment-box">
+            <p className="payment-title">選擇付款方式</p>
+            <div className="payment-options">
+              {paymentMethods.map((method) => (
+                <button
+                  className={paymentMethod === method.id ? "payment-option active" : "payment-option"}
+                  key={method.id}
+                  onClick={() => setPaymentMethod(method.id)}
+                  type="button"
+                >
+                  <span>{method.icon}</span>
+                  <strong>{method.name}</strong>
+                  <small>{method.note}</small>
+                </button>
+              ))}
+            </div>
+          </section>
           <div><span>小計</span><strong>HK${total}</strong></div>
-          <p>運費將於確認訂單時另行計算。</p>
+          <p>運費將於確認訂單時另行計算。付款資料會在確認訂單後提供。</p>
           <a className={itemCount ? "checkout-button" : "checkout-button disabled"} href={itemCount ? `https://wa.me/?text=${orderText}` : undefined} target="_blank" rel="noreferrer">使用 WhatsApp 下單</a>
           <button className="continue-button" onClick={() => setCartOpen(false)}>繼續購物</button>
         </div>
